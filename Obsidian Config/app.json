@@ -1,0 +1,11 @@
+{
+  "strictLineBreaks": true,
+  "autoPairBrackets": false,
+  "autoPairMarkdown": false,
+  "autoConvertHtml": false,
+  "newFileLocation": "current",
+  "attachmentFolderPath": "./Assets",
+  "useMarkdownLinks": true,
+  "showUnsupportedFiles": true,
+  "uriCallbacks": true
+}
