@@ -1,0 +1,11 @@
+{
+  "baseline-style@@accented-interface": true,
+  "baseline-style@@color-scheme-light": "nord-light",
+  "baseline-style@@color-scheme-accent": true,
+  "baseline-style@@color-scheme-dark": "nord-dark",
+  "underwater-theme@@underwater-colors-dark": "nord-dark",
+  "underwater-theme@@underwater-colors-light": "nord-bright",
+  "obsidian-velocity@@theme-paint-light": "jetblue",
+  "obsidian-velocity@@theme-paint-dark": "nord",
+  "obsidian-velocity@@override-default-font": true
+}
