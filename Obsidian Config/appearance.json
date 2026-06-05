@@ -4,6 +4,5 @@
   "interfaceFontFamily": "SF Pro",
   "textFontFamily": "Noto Serif,Noto Serif SC",
   "monospaceFontFamily": "Maple Mono NF CN",
-  "nativeMenus": false,
-  "translucency": true
+  "nativeMenus": false
 }
