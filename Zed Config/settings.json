@@ -1,0 +1,55 @@
+{
+  "session": {
+    "trust_all_worktrees": true
+  },
+
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "Nord Dark"
+  },
+
+  "icon_theme": {
+    "mode": "system",
+    "light": "Colored Zed Icons Theme Light",
+    "dark": "Colored Zed Icons Theme Dark"
+  },
+
+  "ui_font_family": "SF Pro",
+  "ui_font_fallbacks": ["Noto Serif SC", ".SystemUIFont"],
+  "ui_font_size": 16.0,
+
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "buffer_font_fallbacks": ["LXGW WenKai Mono", "SF Mono", ".ZedMono"],
+  "buffer_font_size": 14.0,
+  "buffer_font_features": {
+    "calt": true
+  },
+
+  "terminal": {
+    "font_family": "JetBrains Mono",
+    "font_fallbacks": ["SF Mono", ".ZedMono"]
+  },
+
+  "base_keymap": "JetBrains",
+  "vim_mode": true,
+  "vim": {
+    "toggle_relative_line_numbers": true
+  },
+
+  "title_bar": {
+    "show_sign_in": false
+  },
+
+  "tab_bar": {
+    "show": false
+  },
+
+  "scrollbar": {
+    "show": "never"
+  },
+
+  "project_panel": {
+    "dock": "left"
+  }
+}
