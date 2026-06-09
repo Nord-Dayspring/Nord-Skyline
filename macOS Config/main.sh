@@ -2,6 +2,7 @@
 
 source "$(dirname "$0")/config.sh"
 source "$(dirname "$0")/install.sh"
+source "$(dirname "$0")/github.sh"
 
 SCRIPTS_PATH="${0:a:h}"
 
@@ -33,6 +34,9 @@ fi
 # Terminal and Shell Prompt
 install_starship
 install_ghostty
+
+# Setup GitHub SSH access
+setup_github
 
 # Text Editor & Code Editor
 install_zed
