@@ -14,25 +14,25 @@ select_shell() {
   [zZ] | [zZ]sh) shell="zsh" ;;
   *) shell="${default_shell}" ;;
   esac
+
+  echo "${COLOR_SUCCESS}The shell you selected is: ${shell}.${COLOR_RESET}"
 }
 
 select_shell
-echo "${COLOR_SUCCESS}The shell you selected is: ${shell}.${COLOR_RESET}"
 
-sleep "${SLEEP_SECONDS_BEFORE_CLEAR}"
-clear
-echo "Install basic package manager and fonts..."
+# Basic Package Manager and Fonts
 install_homebrew
 install_mas
 install_fonts
 
-sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && clear
+# Shell
 if [[ "$shell" == "fish" ]]; then
-  echo "Install fish shell to replace $(basename "$SHELL")"
   install_fish
 fi
 
-sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && clear
-echo "Install terminal and prompt..."
+# Terminal and Shell Prompt
 install_starship
 install_ghostty
+
+# Chinese text input
+install_squirrel

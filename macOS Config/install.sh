@@ -131,20 +131,57 @@ install_ghostty() {
 
   open -a "ghostty" && echo "Please press [Enter] if you steps above." && read -rr
 
-  local config_path="${SCRIPTS_PATH}/../Ghostty Config/config.ghostty"
-  local target_path="$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+  local source_config_path="${SCRIPTS_PATH}/../Ghostty Config/config.ghostty"
+  local target_config_path="$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
 
-  if [[ ! -f "$config_path" ]]; then
+  if [[ ! -f "$source_config_path" ]]; then
     echo "${COLOR_ERROR}Source config not found. Please check the integrity of the repo.${COLOR_RESET}"
     echo "${COLOR_WARNING}Skipped config deployment.${COLOR_RESET}"
     return 1
   else
-    cp "${config_path}" "${target_path}"
+    cp "${source_config_path}" "${target_config_path}"
   fi
 
   if [[ "$shell" == "fish" ]]; then
-    echo "command=$(which fish)" >>"${target_path}"
+    echo "command=$(which fish)" >>"${target_config_path}"
   fi
 
-  echo "${COLOR_SUCCESS}Successfully setup Ghostty config. Press 􀆝􀆔, to reload config.${COLOR_RESET}"
+  echo "${COLOR_SUCCESS}Successfully setup Ghostty config.${COLOR_RESET}"
+}
+
+install_squirrel() {
+  check_install "squirrel" && return 0
+
+  if ! confirm_install "Squirrel 鼠须管" "https://rime.im/"; then
+    echo "${COLOR_WARNING}Skipped Squirrel installation.${COLOR_RESET}"
+    return 1
+  fi
+
+  brew install --cask squirrel-app
+  echo "${COLOR_SUCCESS}Successfully installed Squirrel.${COLOR_RESET}"
+
+  local RIME_DIR="$HOME/Library/Rime"
+  mkdir -p "${RIME_DIR}" && cd "${RIME_DIR}"
+
+  git clone https://github.com/rime/plum.git plum
+  bash plum/rime-install iDvel/rime-ice:others/recipes/full
+  echo "${COLOR_SUCCESS}Successfully installed rime-ice 雾凇拼音.${COLOR_RESET}"
+  cd "${SCRIPTS_PATH}"
+
+  local source_config_path="${SCRIPTS_PATH}/../Rime/squirrel.yaml"
+  local target_config_path="${RIME_DIR}/squirrel.yaml"
+
+  if [[ ! -f "$source_config_path" ]]; then
+    echo "${COLOR_ERROR}Source config not found. Please check the integrity of the repo.${COLOR_RESET}"
+    echo "${COLOR_WARNING}Skipped custom rime skin config deployment.${COLOR_RESET}"
+    return 1
+  else
+    echo "" >>"$target_config_path"
+    sed 's/^/  /' "${source_config_path}" >>"${target_config_path}"
+  fi
+
+  echo "The main config files are opened. Modify them if needed."
+  open -a TextEdit "${target_config_path}"
+  open -a TextEdit "${RIME_DIR}/default.yaml"
+  echo "${COLOR_SUCCESS}Successfully complete Squirrel setup.${COLOR_RESET}"
 }
