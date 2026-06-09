@@ -9,11 +9,11 @@ confirm_install() {
 
   echo "Get ready to install $software_name."
   echo "Visit $detail_link for detail information."
-  echo "${COLOR_WARNING}Install $software_name? [Y/n]${COLOR_RESET}" && read -r choice
+  echo "${COLOR_WARNING}Install $software_name? [y/N]${COLOR_RESET}" && read -r choice
 
   case "$choice" in
-  [yY] | [yY][eE][sS]) return 0 ;;
-  [nN] | *) return 1 ;;
+  [nN] | [nN][oO]) return 1 ;;
+  [yY] | *) return 0 ;;
   esac
 }
 
@@ -24,10 +24,10 @@ check_install() {
   sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && clear
   if brew list "$software_name" &>/dev/null; then
     echo "${COLOR_SUCCESS}$software_name has already been installed.${COLOR_RESET}"
-    return 1
+    return 0
   elif $(command -v "$software_name" 2>/dev/null) || ls /Applications 2>/dev/null | grep -iq "$software_name"; then
     echo "${COLOR_WARNING}$software_name is installed, but not via Homebrew.${COLOR_RESET}"
-    return 1
+    return 0
   fi
 
   return 1
