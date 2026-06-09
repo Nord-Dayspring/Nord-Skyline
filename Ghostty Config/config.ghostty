@@ -1,0 +1,9 @@
+theme = light:one half light, dark:nord
+
+font-family = ""
+font-family = "JetBrainsMono Nerd Font"
+font-family = "Maple Mono NF CN"
+
+macos-titlebar-style = hidden
+window-padding-x = 16
+window-padding-y = 12
