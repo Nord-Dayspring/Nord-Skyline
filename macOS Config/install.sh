@@ -16,11 +16,10 @@ install_homebrew() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   echo "${COLOR_SUCCESS}Successfully installed Homebrew.${COLOR_RESET}"
 
-  local target_shell=$(select_shell)
-  if [[ "${target_shell}" == "zsh" ]]; then
+  if [[ "${shell}" == "zsh" ]]; then
     shell_config_path="$HOME/.zprofile"
     shellenv_command="eval \"$(/opt/homebrew/bin/brew shellenv)\""
-  elif [[ "${target_shell}" == "fish" ]]; then
+  elif [[ "${shell}" == "fish" ]]; then
     mkdir -p "$HOME/.config/fish"
     shell_config_path="$HOME/.config/fish/config.fish"
     shellenv_command="eval (/opt/homebrew/bin/brew shellenv)"
@@ -49,7 +48,7 @@ install_mas() {
 }
 
 install_fonts() {
-  if !confirm_install "fonts" "https://github.com/Nord-Dayspring/Nord-Skyline"; then
+  if ! confirm_install "fonts" "https://github.com/Nord-Dayspring/Nord-Skyline"; then
     echo "${COLOR_WARNING}Skipped all font installation. You may face the lack of fonts later.${COLOR_RESET}"
     return 1
   fi
@@ -80,11 +79,56 @@ install_fonts() {
   echo "${COLOR_SUCCESS}All recommended fonts has been installed.${COLOR_RESET}"
 }
 
+install_fish() {
+  if check_install "fish"; then
+    echo "${COLOR_SUCCESS}Fish has already been installed.${COLOR_RESET}"
+    return 0
+  fi
+
+  if !confirm_install "Fish Shell" "https://fishshell.com/"; then
+    echo "Skipped Fish installation."
+    return 1
+  fi
+
+  brew install fish
+  echo "${COLOR_SUCCESS}Successfully installed Fish.${COLOR_RESET}"
+
+  echo "$(which fish)" | sudo tee -a /etc/shells
+  chsh -s "$(which fish)"
+}
+
+install_starship() {
+  if check_install "starship"; then
+    echo "${COLOR_SUCCESS}Starship has already been installed.${COLOR_RESET}"
+    return 0
+  fi
+
+  if ! confirm_install "Starship" "https://starship.rs/"; then
+    echo "${COLOR_WARNING}Skipped Starship installation.${COLOR_RESET}"
+    return 1
+  fi
+
+  brew install starship
+  echo "${COLOR_SUCCESS}Successfully installed Starship.${COLOR_RESET}"
+
+  if [[ "$shell" == "zsh" ]]; then
+    local shell_config_path="$HOME/.zshrc"
+    local initialize_command='eval "$(starship init zsh)"'
+  elif [[ "$shell" == "fish" ]]; then
+    mkdir -p "$HOME/.config/fish"
+    local shell_config_path="$HOME/.config/fish/config.fish"
+    local initialize_command='starship init fish | source'
+  fi
+
+  echo "${initialize_command}" >>"${shell_config_path}"
+  echo "${COLOR_SUCCESS}Successfully append Starship to ${shell} config.${COLOR_RESET}"
+}
+
 install_ghostty() {
   if check_install "ghostty"; then
     echo "${COLOR_SUCCESS}Ghostty has already been installed.${COLOR_RESET}"
     return 0
-  elif !confirm_install "Ghostty" "https://ghostty.org/"; then
+  elif ! confirm_install "Ghostty" "https://ghostty.org/"; then
     echo "Skipped ghostty installation."
     return 1
   fi
@@ -111,8 +155,7 @@ install_ghostty() {
     cp "${config_path}" "${target_path}"
   fi
 
-  local current_shell=$(select_shell)
-  if [[ "$current_shell" == "fish" ]]; then
+  if [[ "$shell" == "fish" ]]; then
     echo "command=$(which fish)" >>"${target_path}"
   fi
 
