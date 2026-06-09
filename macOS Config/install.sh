@@ -1,20 +1,7 @@
 #!/usr/bin/env zsh
 
 source "$(dirname "$0")/config.sh"
-
-_select_shell() {
-  local default_shell=$(basename "$SHELL")
-  read -r -p "Please select your terminal to export Homebrew PATH: [Zsh/Fish] (default: $default_shell)" choice
-
-  local shell
-  case "${choice}" in
-  [fF] | [fF]ish) shell="fish" ;;
-  [zZ] | [zZ]sh) shell="zsh" ;;
-  *) shell="${default_shell}" ;;
-  esac
-
-  echo "${shell}"
-}
+source "$(dirname "$0")/interact.sh"
 
 install_homebrew() {
   clear
@@ -29,7 +16,7 @@ install_homebrew() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   echo "${COLOR_SUCCESS}Successfully installed Homebrew.${COLOR_RESET}"
 
-  local target_shell=$(_select_shell)
+  local target_shell=$(select_shell)
   if [[ "${target_shell}" == "zsh" ]]; then
     shell_config_path="$HOME/.zprofile"
     shellenv_command="eval \"$(/opt/homebrew/bin/brew shellenv)\""
@@ -62,7 +49,7 @@ install_mas() {
 }
 
 install_fonts() {
-  if !confirm_install "Recommended Fonts Collection" "https://github.com/Nord-Dayspring/Nord-Skyline"; then
+  if !confirm_install "fonts" "https://github.com/Nord-Dayspring/Nord-Skyline"; then
     echo "${COLOR_WARNING}Skipped all font installation. You may face the lack of fonts later.${COLOR_RESET}"
     return 1
   fi
@@ -90,5 +77,44 @@ install_fonts() {
     fi
   done
 
-  echo "${COLOR_SUCCESS}All fonts in Recommended Fonts Collection has been installed.${COLOR_RESET}"
+  echo "${COLOR_SUCCESS}All recommended fonts has been installed.${COLOR_RESET}"
+}
+
+install_ghostty() {
+  if check_install "ghostty"; then
+    echo "${COLOR_SUCCESS}Ghostty has already been installed.${COLOR_RESET}"
+    return 0
+  elif !confirm_install "Ghostty" "https://ghostty.org/"; then
+    echo "Skipped ghostty installation."
+    return 1
+  fi
+
+  brew install --cask ghostty
+  echo "${COLOR_SUCCESS}Successfully installed Ghostty.${COLOR_RESET}"
+
+  echo "Please make ghostty the default terminal with the following steps: "
+  echo "1. Click 'Ghostty' in the menu bar when ghostty is on the focus."
+  echo "2. Click '􀋃 Make Ghostty the Default Terminal' in pop-up menu."
+
+  open -a "ghostty"
+  read -r -p "${COLOR_WARNING}Press [Enter] if you finish the manual setup.${COLOR_RESET}"
+
+  local script_path="$(cd "$(dirname "$0")" && pwd)"
+  local config_path="${script_path}/../Ghostty Config/config.ghostty"
+  local target_path="$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+
+  if [[ ! -f "$config_path" ]]; then
+    echo "${COLOR_ERROR}Source config not found. Please check the integrity of the repo.${COLOR_RESET}"
+    echo "${COLOR_WARNING}Skipped config deployment.${COLOR_RESET}"
+    return 1
+  else
+    cp "${config_path}" "${target_path}"
+  fi
+
+  local current_shell=$(select_shell)
+  if [[ "$current_shell" == "fish" ]]; then
+    echo "command=$(which fish)" >>"${target_path}"
+  fi
+
+  echo "${COLOR_SUCCESS}Successfully setup Ghostty config. Press 􀆝􀆔, to reload config.${COLOR_RESET}"
 }
