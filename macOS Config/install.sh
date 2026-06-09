@@ -44,7 +44,7 @@ install_mas() {
 }
 
 install_fonts() {
-  if ! confirm_install "fonts" "https://github.com/Nord-Dayspring/Nord-Skyline"; then
+  if ! confirm_install "Recommended Fonts" "https://github.com/Nord-Dayspring/Nord-Skyline"; then
     echo "${COLOR_WARNING}Skipped all font installation. You may face the lack of fonts later.${COLOR_RESET}"
     return 1
   fi
@@ -134,13 +134,7 @@ install_ghostty() {
   local source_config_path="${SCRIPTS_PATH}/../Ghostty Config/config.ghostty"
   local target_config_path="$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
 
-  if [[ ! -f "$source_config_path" ]]; then
-    echo "${COLOR_ERROR}Source config not found. Please check the integrity of the repo.${COLOR_RESET}"
-    echo "${COLOR_WARNING}Skipped config deployment.${COLOR_RESET}"
-    return 1
-  else
-    cp "${source_config_path}" "${target_config_path}"
-  fi
+  cp "${source_config_path}" "${target_config_path}"
 
   if [[ "$shell" == "fish" ]]; then
     echo "command=$(which fish)" >>"${target_config_path}"
@@ -165,12 +159,6 @@ install_zed() {
 
   local source_config_path="${SCRIPTS_PATH}/../Zed Config/settings.yaml"
   local target_config_path="${ZED_DIR}/settings.json"
-
-  if [[ ! -f "$source_config" ]]; then
-    echo "${COLOR_ERROR}Source config not found. Please check the integrity of the repo.${COLOR_RESET}"
-    echo "${COLOR_WARNING}Skipped zed setting config deployment.${COLOR_RESET}"
-    return 1
-  fi
 
   cp "${source_config_path}" "${target_config_path}"
   echo "${COLOR_SUCCESS}Successfully setup Zed settings.${COLOR_RESET}"
@@ -198,12 +186,6 @@ install_squirrel() {
   local source_config_path="${SCRIPTS_PATH}/../Squirrel Config/squirrel.yaml"
   local target_config_path="${RIME_DIR}/squirrel.yaml"
 
-  if [[ ! -f "$source_config_path" ]]; then
-    echo "${COLOR_ERROR}Source config not found. Please check the integrity of the repo.${COLOR_RESET}"
-    echo "${COLOR_WARNING}Skipped custom rime skin config deployment.${COLOR_RESET}"
-    return 1
-  fi
-
   echo "" >>"$target_config_path"
   sed 's/^/  /' "${source_config_path}" >>"${target_config_path}"
 
@@ -211,4 +193,51 @@ install_squirrel() {
   open -a TextEdit "${target_config_path}"
   open -a TextEdit "${RIME_DIR}/default.yaml"
   echo "${COLOR_SUCCESS}Successfully complete Squirrel setup.${COLOR_RESET}"
+}
+
+install_recommend_apps() {
+  if ! confirm_install "Recommended Apps" "https://github.com/Nord-Dayspring/Nord-Skyline"; then
+    echo "${COLOR_WARNING}Skipped recommended apps installation.${COLOR_RESET}"
+    return 1
+  fi
+
+  local homebrew_apps=(
+    "stats"
+    "raycast"
+    "clion"
+    "pycharm"
+    "intellij-idea"
+    "arc"
+    "firefox"
+    "zen"
+  )
+
+  for app in "${homebrew_apps[@]}"; do
+    check_install "${app}" && continue
+    brew install "${app}"
+    echo "${COLOR_SUCCESS}Successfully installed ${app}.${COLOR_RESET}"
+  done
+
+  declare -A mas_apps=(
+    ["WeChat"]="451108668"
+    ["QQ"]="836500024"
+    ["Pages"]="361309726"
+    ["Keynotes"]="361285480"
+    ["Numbers"]="361304891"
+    ["Wuthering Waves"]="6450693428"
+  )
+
+  for app_name in "${(@k)mas_apps}"; do
+    local app_id="${mas_apps[$app_name]}"
+    local app_link="https://apps.apple.com/app/id$app_id"
+
+    if confirm_install "$app_name" "$app_link"; then
+      mas install "$app_id"
+      echo "${COLOR_SUCCESS}Successfully installed $app_name.${COLOR_RESET}"
+    else
+      echo "${COLOR_WARNING}Skipped $app_name.${COLOR_RESET}"
+    fi
+  done
+
+  echo "${COLOR_SUCCESS}All other essential apps installation completed.${COLOR_RESET}"
 }
