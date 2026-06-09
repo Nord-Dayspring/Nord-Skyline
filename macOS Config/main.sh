@@ -31,6 +31,9 @@ if [[ "$shell" == "fish" ]]; then
   install_fish
 fi
 
+# Windows Manager
+install_aerospace
+
 # Terminal and Shell Prompt
 install_starship
 install_ghostty
@@ -43,3 +46,6 @@ install_zed
 
 # Chinese text input
 install_squirrel
+
+# Recommend Softwares
+install_recommend_apps

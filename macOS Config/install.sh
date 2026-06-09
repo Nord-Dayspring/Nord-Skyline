@@ -90,6 +90,27 @@ install_fish() {
   chsh -s "$(which fish)"
 }
 
+install_aerospace() {
+  check_install "aerospace" && return 0
+
+  if ! confirm_install "Aerospace" "https://github.com/nikitabobko/AeroSpace"; then
+    echo "${COLOR_WARNING}Skipped Aerospace installation.${COLOR_RESET}"
+    return 1
+  fi
+
+  brew install --cask nikitabobko/tap/aerospace
+  echo "${COLOR_SUCCESS}Successfully installed Aerospace.${COLOR_RESET}"
+
+  local AEROSPACE_DIR="$HOME/.config/aerospace"
+  mkdir -p "${AEROSPACE_DIR}"
+
+  local source_config_path="${SCRIPTS_PATH}/../Aerospace Config/aerospace.toml"
+  local target_config_path="${AEROSPACE_DIR}/aerospace.toml"
+
+  cp "${source_config_path}" "${target_config_path}"
+  echo "${COLOR_SUCCESS}Successfully setup Aerospace settings.${COLOR_RESET}"
+}
+
 install_starship() {
   check_install "starship" && return 0
 
