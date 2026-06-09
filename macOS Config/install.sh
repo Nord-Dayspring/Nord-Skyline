@@ -4,7 +4,7 @@ source "$(dirname "$0")/config.sh"
 source "$(dirname "$0")/interact.sh"
 
 install_homebrew() {
-  clear
+  sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && clear
   echo "${COLOR_WARNING}Starting install Homebrew (may take a while)...${COLOR_RESET}"
 
   # Check if Homebrew has already been installed.
@@ -31,19 +31,15 @@ install_homebrew() {
 }
 
 install_mas() {
-  clear
-
-  if check_install "mas"; then
-    echo "${COLOR_SUCCESS}mas has already been installed.${COLOR_RESET}"
-    return 0
-  fi
+  sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && clear
+  check_install "mas" && return 0
 
   brew install mas
   echo "${COLOR_SUCCESS}Successfully installed mas.${COLOR_RESET}"
 
   echo "${COLOR_WARNING}Please log in Mac App Store with your Apple ID.${COLOR_RESET}"
-  open -a "App Store"
-  read -r -p "Press [Enter] if you have successfully logged in."
+  open -a "App Store" && waiting_for_enter
+
   echo "${COLOR_SUCCESS}Successfully connect mas with Mac App Store.${COLOR_RESET}"
 }
 
@@ -80,12 +76,9 @@ install_fonts() {
 }
 
 install_fish() {
-  if check_install "fish"; then
-    echo "${COLOR_SUCCESS}Fish has already been installed.${COLOR_RESET}"
-    return 0
-  fi
+  check_install "fish" && return 0
 
-  if !confirm_install "Fish Shell" "https://fishshell.com/"; then
+  if ! confirm_install "Fish Shell" "https://fishshell.com/"; then
     echo "Skipped Fish installation."
     return 1
   fi
@@ -98,10 +91,7 @@ install_fish() {
 }
 
 install_starship() {
-  if check_install "starship"; then
-    echo "${COLOR_SUCCESS}Starship has already been installed.${COLOR_RESET}"
-    return 0
-  fi
+  check_install "starship" && return 0
 
   if ! confirm_install "Starship" "https://starship.rs/"; then
     echo "${COLOR_WARNING}Skipped Starship installation.${COLOR_RESET}"
@@ -125,10 +115,9 @@ install_starship() {
 }
 
 install_ghostty() {
-  if check_install "ghostty"; then
-    echo "${COLOR_SUCCESS}Ghostty has already been installed.${COLOR_RESET}"
-    return 0
-  elif ! confirm_install "Ghostty" "https://ghostty.org/"; then
+  check_install "ghostty" && return 0
+
+  if ! confirm_install "Ghostty" "https://ghostty.org/"; then
     echo "Skipped ghostty installation."
     return 1
   fi
@@ -140,11 +129,9 @@ install_ghostty() {
   echo "1. Click 'Ghostty' in the menu bar when ghostty is on the focus."
   echo "2. Click '􀋃 Make Ghostty the Default Terminal' in pop-up menu."
 
-  open -a "ghostty"
-  read -r -p "${COLOR_WARNING}Press [Enter] if you finish the manual setup.${COLOR_RESET}"
+  open -a "ghostty" && waiting_for_enter
 
-  local script_path="$(cd "$(dirname "$0")" && pwd)"
-  local config_path="${script_path}/../Ghostty Config/config.ghostty"
+  local config_path="${SCRIPTS_PATH}/../Ghostty Config/config.ghostty"
   local target_path="$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
 
   if [[ ! -f "$config_path" ]]; then

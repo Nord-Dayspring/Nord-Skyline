@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+SLEEP_SECONDS_BEFORE_CLEAR=0.5
+
 # Load the color variables of zsh. Fallback to "tput" if cannot detect.
 #
 # fg support black, red, green, yellow, blue, magenta, cyan and white.
