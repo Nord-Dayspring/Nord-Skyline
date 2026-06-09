@@ -1,4 +1,13 @@
+source "$(dirname "$0")/config.sh"
+
 setup_github() {
+  sleep ${SLEEP_SECONDS_BEFORE_CLEAR} && echo ""
+  echo "Do you want to create SSH key for GitHub? [y/N]" && read -r choice
+  case "$choice" in
+  [nN] | [nN][oO]) return 1 ;;
+  [yY] | *) ;;
+  esac
+
   echo "Please enter your Git username: " && read -r username
   echo "Please enter your Git email: " && read -r usermail
 
@@ -6,7 +15,7 @@ setup_github() {
   git config --global user.email "${usermail}"
   echo "${COLOR_SUCCESS}Git global config updated.${COLOR_RESET}"
 
-  ssh-keygen -t ed25519 -C "${usermail}" -f "$HOME/.ssh/github_ssh" -N
+  ssh-keygen -t ed25519 -C "${usermail}" -f "$HOME/.ssh/github_ssh"
   eval "$(ssh-agent -s)"
   ssh-add --apple-use-keychain "$HOME/.ssh/github_ssh"
   echo "${COLOR_SUCCESS}SSH key created and added to keychain.${COLOR_RESET}"

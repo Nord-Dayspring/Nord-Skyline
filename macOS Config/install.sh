@@ -4,7 +4,7 @@ source "$(dirname "$0")/config.sh"
 source "$(dirname "$0")/interact.sh"
 
 install_homebrew() {
-  sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && clear
+  sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && echo ""
   echo "${COLOR_WARNING}Starting install Homebrew (may take a while)...${COLOR_RESET}"
 
   # Check if Homebrew has already been installed.
@@ -31,7 +31,7 @@ install_homebrew() {
 }
 
 install_mas() {
-  sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && clear
+  sleep "${SLEEP_SECONDS_BEFORE_CLEAR}" && echo ""
   check_install "mas" && return 0
 
   brew install mas
@@ -63,13 +63,12 @@ install_fonts() {
   )
 
   for font in "${fonts[@]}"; do
-    if check_install "$font"; then
+    if brew list --cask "$font" &>/dev/null; then
       echo "${COLOR_SUCCESS}${font} has already been installed.${COLOR_RESET}"
       continue
-    else
-      brew install --cask "$font"
-      echo "${COLOR_SUCCESS}Successfully installed ${font}.${COLOR_RESET}"
     fi
+    brew install --cask "$font"
+    echo "${COLOR_SUCCESS}Successfully installed ${font}.${COLOR_RESET}"
   done
 
   echo "${COLOR_SUCCESS}All recommended fonts has been installed.${COLOR_RESET}"
@@ -93,7 +92,7 @@ install_fish() {
 install_aerospace() {
   check_install "aerospace" && return 0
 
-  if ! confirm_install "Aerospace" "https://github.com/nikitabobko/AeroSpace"; then
+  if ! confirm_install "aerospace" "https://github.com/nikitabobko/AeroSpace"; then
     echo "${COLOR_WARNING}Skipped Aerospace installation.${COLOR_RESET}"
     return 1
   fi
