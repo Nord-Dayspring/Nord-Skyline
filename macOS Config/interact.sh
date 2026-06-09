@@ -32,8 +32,3 @@ check_install() {
 
   return 1
 }
-
-# Wait until user do the thing in prompt and press enter.
-waiting_for_enter() {
-  echo "Please press [Enter] if you finished." && read -r
-}

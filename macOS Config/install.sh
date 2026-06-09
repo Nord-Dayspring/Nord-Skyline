@@ -38,7 +38,7 @@ install_mas() {
   echo "${COLOR_SUCCESS}Successfully installed mas.${COLOR_RESET}"
 
   echo "${COLOR_WARNING}Please log in Mac App Store with your Apple ID.${COLOR_RESET}"
-  open -a "App Store" && waiting_for_enter
+  open -a "App Store" && echo "Please press [Enter] if you finished logging in." && read -r
 
   echo "${COLOR_SUCCESS}Successfully connect mas with Mac App Store.${COLOR_RESET}"
 }
@@ -129,7 +129,7 @@ install_ghostty() {
   echo "1. Click 'Ghostty' in the menu bar when ghostty is on the focus."
   echo "2. Click '􀋃 Make Ghostty the Default Terminal' in pop-up menu."
 
-  open -a "ghostty" && waiting_for_enter
+  open -a "ghostty" && echo "Please press [Enter] if you steps above." && read -rr
 
   local config_path="${SCRIPTS_PATH}/../Ghostty Config/config.ghostty"
   local target_path="$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
