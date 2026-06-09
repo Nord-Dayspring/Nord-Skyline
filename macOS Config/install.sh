@@ -149,6 +149,33 @@ install_ghostty() {
   echo "${COLOR_SUCCESS}Successfully setup Ghostty config.${COLOR_RESET}"
 }
 
+install_zed() {
+  check_install "zed" && return 0
+
+  if ! confirm_install "Zed" "https://zed.dev/"; then
+    echo "${COLOR_WARNING}Skipped Zed installation.${COLOR_RESET}"
+    return 1
+  fi
+
+  brew install --cask zed
+  echo "${COLOR_SUCCESS}Successfully installed Zed.${COLOR_RESET}"
+
+  local ZED_DIR="$HOME/.config/zed"
+  mkdir -p "${ZED_DIR}"
+
+  local source_config_path="${SCRIPTS_PATH}/../Zed Config/settings.yaml"
+  local target_config_path="${ZED_DIR}/settings.json"
+
+  if [[ ! -f "$source_config" ]]; then
+    echo "${COLOR_ERROR}Source config not found. Please check the integrity of the repo.${COLOR_RESET}"
+    echo "${COLOR_WARNING}Skipped zed setting config deployment.${COLOR_RESET}"
+    return 1
+  fi
+
+  cp "${source_config_path}" "${target_config_path}"
+  echo "${COLOR_SUCCESS}Successfully setup Zed settings.${COLOR_RESET}"
+}
+
 install_squirrel() {
   check_install "squirrel" && return 0
 
@@ -168,17 +195,17 @@ install_squirrel() {
   echo "${COLOR_SUCCESS}Successfully installed rime-ice 雾凇拼音.${COLOR_RESET}"
   cd "${SCRIPTS_PATH}"
 
-  local source_config_path="${SCRIPTS_PATH}/../Rime/squirrel.yaml"
+  local source_config_path="${SCRIPTS_PATH}/../Squirrel Config/squirrel.yaml"
   local target_config_path="${RIME_DIR}/squirrel.yaml"
 
   if [[ ! -f "$source_config_path" ]]; then
     echo "${COLOR_ERROR}Source config not found. Please check the integrity of the repo.${COLOR_RESET}"
     echo "${COLOR_WARNING}Skipped custom rime skin config deployment.${COLOR_RESET}"
     return 1
-  else
-    echo "" >>"$target_config_path"
-    sed 's/^/  /' "${source_config_path}" >>"${target_config_path}"
   fi
+
+  echo "" >>"$target_config_path"
+  sed 's/^/  /' "${source_config_path}" >>"${target_config_path}"
 
   echo "The main config files are opened. Modify them if needed."
   open -a TextEdit "${target_config_path}"

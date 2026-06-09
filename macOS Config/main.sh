@@ -34,5 +34,8 @@ fi
 install_starship
 install_ghostty
 
+# Text Editor & Code Editor
+install_zed
+
 # Chinese text input
 install_squirrel
