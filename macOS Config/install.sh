@@ -52,7 +52,7 @@ install_fonts() {
   local fonts=(
     "font-jetbrains-mono"
     "font-lxgw-wenkai"
-    "font-maple-mono-nf-cn"
+    "font-maple-mono"
     "font-new-york"
     "font-noto-sans"
     "font-noto-sans-sc"
